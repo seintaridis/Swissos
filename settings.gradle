@@ -1,0 +1,2 @@
+rootProject.name='Swissos'
+include ':app'
