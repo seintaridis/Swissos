@@ -11,9 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".EmergencyNumberActivity"></activity>
         <activity
-            android:label="@string/main_activity_name"
-            android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:label="@string/main_activity_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

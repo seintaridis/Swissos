@@ -1,6 +1,9 @@
 package com.seintaridis.swissos;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -36,5 +39,25 @@ public class MainActivity extends AppCompatActivity
         rvEmergencyNumbers.addItemDecoration(itemDecoration);
 
 
+    }
+
+    private void showMap(Uri uri)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(uri);
+        if (intent.resolveActivity(getPackageManager()) != null)
+        {
+            startActivity(intent);
+        }
+    }
+
+    public void onClickAddressButton(View view)
+    {
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("geo")
+                .path("0,0")
+                .query("1220 Geneva, Switzerland");
+        Uri addressUri = builder.build();
+        showMap(addressUri);
     }
 }

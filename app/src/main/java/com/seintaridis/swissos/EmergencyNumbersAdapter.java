@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -68,24 +69,27 @@ public class EmergencyNumbersAdapter extends RecyclerView.Adapter<EmergencyNumbe
         return mEmergencyNumbers.size();
     }
 
-
     public class NumberViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         public TextView nameTextView;
         public Button messageButton;
+        public ImageView infoImageView;
         private Context context;
 
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
-        public NumberViewHolder(Context context, View itemView)
+        public NumberViewHolder(final Context context, View itemView)
         {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
 
             this.nameTextView = (TextView) itemView.findViewById(R.id.emergency_number_label);
+
             this.messageButton = (Button) itemView.findViewById(R.id.emergency_number_button);
+
+            this.infoImageView = (ImageView) itemView.findViewById(R.id.emergency_info_icon);
 
             this.messageButton.setOnClickListener(new OnClickListener()
             {
@@ -93,12 +97,17 @@ public class EmergencyNumbersAdapter extends RecyclerView.Adapter<EmergencyNumbe
                 public void onClick(View v)
                 {
                     EmergencyNumber emergencyNumber = mEmergencyNumbers.get(getAdapterPosition());
-                    // We can access the data within the views
-                    System.out.println(emergencyNumber.getPhoneNumber());
-
                     dialPhoneNumber(emergencyNumber.getPhoneNumber());
+                }
+            });
 
-
+            this.infoImageView.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    EmergencyNumber emergencyNumber = mEmergencyNumbers.get(getAdapterPosition());
+                    openWebPage(emergencyNumber.getUrl());
                 }
             });
 
@@ -109,22 +118,40 @@ public class EmergencyNumbersAdapter extends RecyclerView.Adapter<EmergencyNumbe
         @Override
         public void onClick(View view)
         {
-            int position = getAdapterPosition(); // gets item position
-            if (position != RecyclerView.NO_POSITION)
-            { // Check if an item was deleted, but the user clicked it before the UI removed it
-                EmergencyNumber emergencyNumber = mEmergencyNumbers.get(position);
-                // We can access the data within the views
-                dialPhoneNumber(emergencyNumber.getPhoneNumber());
-            }
+//            int position = getAdapterPosition(); // gets item position
+//            if (position != RecyclerView.NO_POSITION)
+//            { // Check if an item was deleted, but the user clicked it before the UI removed it
+//                EmergencyNumber emergencyNumber = mEmergencyNumbers.get(position);
+//                // We can access the data within the views
+//
+//                Class destinationActivity = EmergencyNumberActivity.class;
+//                Intent intent = new Intent(context,destinationActivity);
+//                intent.putExtra(ExtraIntents.EMERGENCY.name(), emergencyNumber);
+//
+//                context.startActivity(intent);
+//            }
         }
 
-
-        public void dialPhoneNumber(String phoneNumber) {
+        private void dialPhoneNumber(String phoneNumber) {
             Intent intent = new Intent(Intent.ACTION_DIAL);
             intent.setData(Uri.parse("tel:" + phoneNumber));
             if (intent.resolveActivity(context.getPackageManager()) != null) {
                 context.startActivity(intent);
             }
         }
+
+        public void openWebPage(String url) {
+            Uri webpage = Uri.parse(url);
+            Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                context.startActivity(intent);
+            }
+        }
+
+
+    }
+
+    enum ExtraIntents {
+        EMERGENCY
     }
 }
